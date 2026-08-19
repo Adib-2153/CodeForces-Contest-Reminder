@@ -4,10 +4,11 @@
   "description": "WhatsApp Bot for CodeForces Contest Reminders",
   "main": "index.js",
   "scripts": {
-    "postinstall": "npx puppeteer install",
+    "postinstall": "npx puppeteer install chrome",
     "start": "node index.js"
   },
   "dependencies": {
+    "express": "^4.19.2",
     "whatsapp-web.js": "^1.23.0",
     "qrcode-terminal": "^0.12.0",
     "request-promise": "^4.2.6",
