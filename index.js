@@ -70,24 +70,31 @@ try {
 }
 
 
+let client;
 
-const client = new Client({
-    authStrategy: new LocalAuth(),
-    puppeteer: {
-        executablePath: await chromium.executablePath(),
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-accelerated-2d-canvas',
-            '--no-first-run',
-            '--no-zygote',
-            '--single-process',
-            '--disable-gpu'
-        ],
-        headless: chromium.headless,
-    }
-});
+async function initClient() {
+    client = new Client({
+        authStrategy: new LocalAuth(),
+        puppeteer: {
+            executablePath: await chromium.executablePath(),
+            args: chromium.args,
+            headless: chromium.headless
+        }
+    });
+
+    // Move your client event listeners (like client.on('qr'), client.on('ready')) inside or keep them right after
+    client.on('qr', (qr) => {
+        qrcode.generate(qr, { small: true });
+    });
+
+    client.on('ready', () => {
+        console.log('Client is ready!');
+    });
+
+    client.initialize();
+}
+
+initClient();
 
 
 client.on('qr', qr => {
