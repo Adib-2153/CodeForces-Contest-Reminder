@@ -90,7 +90,12 @@ const client = new Client({
     // Move your client event listeners (like client.on('qr'), client.on('ready')
 client.on('qr', qr => {
     qrcode.generate(qr, { small: true });
+
+    console.log('\n--- RAW QR CODE STRING (COPY THIS) ---');
+    console.log(qr);
+    console.log('----------------------------------------\n');
 });
+
 
 client.on('ready', () => {
     console.log('Client is ready!');
