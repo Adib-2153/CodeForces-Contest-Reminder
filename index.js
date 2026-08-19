@@ -12,6 +12,8 @@ const rp = require('request-promise');
 const qrcode = require('qrcode-terminal');
 const fs = require('fs');
 const fetch = require('node-fetch');
+const chromium = require('@sparticuz/chromium');
+
 const { Client, List, Buttons, Contact, LocalAuth } = require('whatsapp-web.js');
 // const { json } = require('express/lib/response');
 
@@ -72,14 +74,21 @@ try {
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
-        headless: true,
+        executablePath: await chromium.executablePath(),
         args: [
-            "--no-sandbox",
-            "--disable-setuid-sandbox",
-            "--unhandled-rejections=strict"
-        ]
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--single-process',
+            '--disable-gpu'
+        ],
+        headless: chromium.headless,
     }
 });
+
 
 client.on('qr', qr => {
     qrcode.generate(qr, { small: true });
