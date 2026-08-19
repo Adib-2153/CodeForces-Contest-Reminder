@@ -12,7 +12,7 @@ const rp = require('request-promise');
 const qrcode = require('qrcode-terminal');
 const fs = require('fs');
 const fetch = require('node-fetch');
-const chromium = require('@sparticuz/chromium');
+const puppeteer = require('puppeteer');
 
 const { Client, List, Buttons, Contact, LocalAuth } = require('whatsapp-web.js');
 // const { json } = require('express/lib/response');
@@ -72,31 +72,23 @@ try {
 
 let client;
 
-async function initClient() {
-    client = new Client({
-        authStrategy: new LocalAuth(),
-        puppeteer: {
-            executablePath: await chromium.executablePath(),
-            args: chromium.args,
-            headless: chromium.headless
-        }
-    });
-
-    // Move your client event listeners (like client.on('qr'), client.on('ready')) inside or keep them right after
-    client.on('qr', (qr) => {
-        qrcode.generate(qr, { small: true });
-    });
-
-    client.on('ready', () => {
-        console.log('Client is ready!');
-    });
-
-    client.initialize();
-}
-
-initClient();
-
-
+const client = new Client({
+    authStrategy: new LocalAuth(),
+    puppeteer: {
+        headless: true,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--single-process',
+            '--disable-gpu'
+        ]
+    }
+});
+    // Move your client event listeners (like client.on('qr'), client.on('ready')
 client.on('qr', qr => {
     qrcode.generate(qr, { small: true });
 });
